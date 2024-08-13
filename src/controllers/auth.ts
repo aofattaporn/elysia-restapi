@@ -11,12 +11,10 @@ const authController = new Elysia({ prefix: "/auth" })
       // calling service handler
       userService.createUser({ email: body.email, password: body.username });
 
-      // ressponse modeling
-      const response: CommonResponse<User> = {
+      return {
         code: 1000,
         description: "get user success",
-      };
-      return response;
+      } as CommonResponse<User>;
     },
     { body: EUser }
   )
