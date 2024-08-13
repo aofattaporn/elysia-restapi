@@ -1,13 +1,8 @@
-const handleSignIn = async ({ body }: any) => {
-  console.log(body);
-  return;
-};
+import Elysia from "elysia";
 
-const handleSignUp = async () => {
-  return;
-};
+const authController = new Elysia({ prefix: "/auth" })
+  .post("/sign-in", () => "Sign in")
+  .post("/sign-up", () => "Sign up")
+  .post("/profile", () => "Profile");
 
-// Export the functions as part of an object named authApi
-const authApi = { handleSignIn, handleSignUp };
-
-export default authApi;
+export default authController;

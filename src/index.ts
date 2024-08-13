@@ -1,24 +1,15 @@
-import { Elysia } from "elysia";
-import authApi from "./controllers/auth";
+import { Elysia, t } from "elysia";
+import authController from "./controllers/auth";
+import userController from "./controllers/user";
 
 const app = new Elysia()
 
   // before handlering
   .onBeforeHandle(() => {})
 
-  // route handlering
-  .group("/auth", (app) => {
-    return app
-      .get("/", authApi.handleSignIn)
-      .post("/sign-in", authApi.handleSignIn)
-      .put("/sign-up", authApi.handleSignIn);
-  })
-  .group("/user", (user) => {
-    return user
-      .get("/", authApi.handleSignIn)
-      .post("/", () => {})
-      .put("/", () => {});
-  })
+  // use seperate prefix instance
+  .use(authController)
+  .use(userController)
 
   // error route for not found
   .onError(({ code }) => {
@@ -26,8 +17,9 @@ const app = new Elysia()
   })
 
   // initial server
-  .listen(3000);
+  .listen(Number(Bun.env.PORT));
 
-app.handle(new Request("http://localhost/auth")).then((res: Response) => {
+// Testing API Request
+app.handle(new Request("http://localhost/users")).then((res: Response) => {
   console.log(res);
 });
