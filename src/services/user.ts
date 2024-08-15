@@ -1,8 +1,11 @@
 import { Auth } from "../models/auth";
-import { User } from "../models/user";
 
 abstract class userService {
-  static getUser(): User[] {
+  static getUser(): Auth[] {
+    return [];
+  }
+
+  static findUserByEmail(auth: Auth): Auth[] {
     return [];
   }
 
