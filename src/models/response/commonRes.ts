@@ -6,12 +6,6 @@ export interface CommonResponse<T> {
   data?: T;
 }
 
-export const ECommonResponse = {
-  code: t.Number(),
-  description: t.String(),
-  data: t.Object,
-};
-
 export const CommonResponseSchema = <T extends TSchema>(T: T) =>
   t.Object({
     code: t.Number(),

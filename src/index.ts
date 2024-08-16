@@ -1,11 +1,11 @@
 import { Elysia, t } from "elysia";
 import authController from "./controllers/auth";
 import userController from "./controllers/user";
+import { setup } from "./setup";
 
 const app = new Elysia()
 
-  .onBeforeHandle(() => {})
-
+  .use(setup)
   .use(authController)
   .use(userController)
 
