@@ -5,6 +5,10 @@ import bearer from "@elysiajs/bearer";
 import cors from "@elysiajs/cors";
 import serverTiming from "@elysiajs/server-timing";
 import swagger from "@elysiajs/swagger";
+import GlobalError from "./errors/globalError";
+import moment from "moment";
+import { ResponseError } from "./models/response/errorRes";
+import { plugin } from "./setup";
 
 const app = new Elysia()
 
@@ -13,17 +17,47 @@ const app = new Elysia()
   .use(bearer())
   .use(serverTiming())
 
+  // error handlers
+  .error({ GlobalError })
+  .onError(({ code, error, set }) => {
+    switch (code) {
+      case "NOT_FOUND":
+        set.status = 404;
+        return {
+          code: 1909,
+          message: "Not Found :(",
+          timestamp: moment().format(),
+        };
+      case "GlobalError":
+        set.status = 417;
+        return {
+          code: 1669,
+          message: error.message,
+          timestamp: moment().format(),
+        };
+      case "INTERNAL_SERVER_ERROR":
+        set.status = 417;
+        return {
+          code: 10001,
+          message: "Not Found :(",
+          timestamp: moment().format(),
+        } as ResponseError;
+      default:
+        set.status = 417;
+        return {
+          code: 10001,
+          message: "Not Found :(",
+          timestamp: moment().format(),
+        } as ResponseError;
+    }
+  })
+
+  // route handleer
   .use(authController)
   .use(userController)
 
-  .onError(({ code }) => {
-    if (code === "NOT_FOUND") return "Route not found :(";
-  })
-
   // initial server
-  .listen(Number(Bun.env.PORT) || 3000);
-
-// Testing API Request
-app.handle(new Request("http://localhost/users")).then((res: Response) => {
-  console.log(res);
-});
+  .listen(3000);
+console.log(
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+);
