@@ -4,13 +4,14 @@ import { CommonResponseSchema } from "../models/response/commonRes";
 import { STATUS_CODE_1000, SUCCESS } from "../constants/common";
 import { UserAccountSchema } from "../models/user";
 import { Auth } from "../models/auth";
+import { plugin } from "../setup";
 import jwt from "@elysiajs/jwt";
 
 const authController = new Elysia({ prefix: "/auth" })
+  .use(plugin)
   .use(
     jwt({
-      name: "jwt",
-      secret: "Fischl von Luftschloss Narfidort",
+      secret: "a",
     })
   )
   .post(
@@ -41,21 +42,24 @@ const authController = new Elysia({ prefix: "/auth" })
 
   .post(
     "/sign-in",
-    async ({ jwt, cookie: { auth }, body, params }) => {
+    async ({ jwt, plugin, cookie: { auth }, body, params }) => {
       const cred = body;
 
+      plugin.logger.logInfo("check user require parameter");
       if (cred.email && cred.password) {
       }
 
+      plugin.logger.logInfo("check user already exist");
       const isExist: boolean = userService.checkAuth(cred);
       if (!isExist) {
       }
 
+      plugin.logger.logInfo("generate jwt token and attach");
       auth.set({
         value: await jwt.sign(params),
         httpOnly: true,
         maxAge: 7 * 86400,
-        path: "/profile",
+        path: "/",
       });
 
       return {
