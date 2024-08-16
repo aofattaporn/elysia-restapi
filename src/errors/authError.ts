@@ -1,4 +1,4 @@
-class GlobalError extends Error {
+class AuthError extends Error {
   constructor(
     public status: number,
     public code: number,
@@ -8,4 +8,4 @@ class GlobalError extends Error {
   }
 }
 
-export default GlobalError;
+export default AuthError;
