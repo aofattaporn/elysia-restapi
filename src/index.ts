@@ -8,6 +8,15 @@ import swagger from "@elysiajs/swagger";
 import GlobalError from "./errors/globalError";
 import moment from "moment";
 import { ResponseError } from "./models/response/errorRes";
+import {
+  HTTP_STATUS_CODE_404,
+  HTTP_STATUS_CODE_500,
+  INTERNAL_SERVER_ERROR,
+  REQUEST_NOT_FOUND,
+  STATUS_CODE_1999,
+  STATUS_CODE_9999,
+} from "./constants/common";
+import errorHandler from "./errors/errorhandlers";
 import { plugin } from "./setup";
 
 const app = new Elysia()
@@ -17,40 +26,8 @@ const app = new Elysia()
   .use(bearer())
   .use(serverTiming())
 
-  // error handlers
-  .error({ GlobalError })
-  .onError(({ code, error, set }) => {
-    switch (code) {
-      case "NOT_FOUND":
-        set.status = 404;
-        return {
-          code: 1909,
-          message: "Not Found :(",
-          timestamp: moment().format(),
-        };
-      case "GlobalError":
-        set.status = 417;
-        return {
-          code: 1669,
-          message: error.message,
-          timestamp: moment().format(),
-        };
-      case "INTERNAL_SERVER_ERROR":
-        set.status = 417;
-        return {
-          code: 10001,
-          message: "Not Found :(",
-          timestamp: moment().format(),
-        } as ResponseError;
-      default:
-        set.status = 417;
-        return {
-          code: 10001,
-          message: "Not Found :(",
-          timestamp: moment().format(),
-        } as ResponseError;
-    }
-  })
+  // error handlers - global scope plugins
+  .use(errorHandler)
 
   // route handleer
   .use(authController)
@@ -58,6 +35,7 @@ const app = new Elysia()
 
   // initial server
   .listen(3000);
+
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
 );

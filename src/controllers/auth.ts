@@ -11,7 +11,7 @@ const authController = new Elysia({ prefix: "/auth" })
   .use(plugin)
   .use(
     jwt({
-      secret: "a",
+      secret: "jwt-secrets",
     })
   )
   .post(
