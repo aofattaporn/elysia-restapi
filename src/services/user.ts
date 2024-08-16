@@ -9,6 +9,10 @@ abstract class userService {
     return [];
   }
 
+  static checkAuth(auth: Auth): boolean {
+    return true;
+  }
+
   static createUser(auth: Auth) {}
 
   static updateUser(auth: Auth) {}
