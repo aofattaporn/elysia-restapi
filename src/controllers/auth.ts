@@ -16,18 +16,22 @@ const authController = new Elysia({ prefix: "/auth" })
   )
   .post(
     "/register",
-    ({ body }) => {
+    ({ plugin, body }) => {
       const cred = body;
 
+      plugin.logger.logInfo("check user require parameter");
       if (cred.email && cred.password) {
       }
 
+      plugin.logger.logInfo("check user already exist");
       const users: Auth[] = userService.findUserByEmail(cred);
       if (users.length > 0) {
       }
 
+      plugin.logger.logInfo("save user on database");
       userService.createUser(cred);
 
+      plugin.logger.logInfo("/register request success");
       return {
         code: STATUS_CODE_1000,
         description: SUCCESS,
@@ -62,6 +66,7 @@ const authController = new Elysia({ prefix: "/auth" })
         path: "/",
       });
 
+      plugin.logger.logInfo("/sign-in request success");
       return {
         code: STATUS_CODE_1000,
         description: SUCCESS,
