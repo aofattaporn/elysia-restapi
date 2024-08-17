@@ -10,11 +10,10 @@ import userService from "./services/user";
 import AuthError from "./errors/authError";
 import jwt from "@elysiajs/jwt";
 import { STATUS_CODE_1799 } from "./constants/common";
-import customSwager from "./plugins/documentation";
 import documentation from "./plugins/documentation";
 import cordConfigs from "./plugins/cors";
 
-const app = new Elysia()
+export const app = new Elysia()
 
   .use(serverTiming())
   .use(bearer())
@@ -28,6 +27,7 @@ const app = new Elysia()
   .use(errorHandler)
 
   // route handleer
+  .get("/hello", "Helloworld", { response: t.String() })
   .use(authController)
   .use(
     jwt({
