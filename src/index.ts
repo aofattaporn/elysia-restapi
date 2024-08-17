@@ -21,7 +21,7 @@ export const app = new Elysia()
   .use(documentation)
 
   // initial database
-  .onBeforeHandle(() => userService.initialDatabe())
+  .onBeforeHandle(() => userService.initialDB())
 
   // error handlers - global scope plugins
   .use(errorHandler)

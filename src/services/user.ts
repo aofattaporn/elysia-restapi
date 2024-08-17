@@ -7,7 +7,7 @@ import { UserAccountRes } from "../models/response/userRes";
 abstract class userService {
   private static db: Database = new Database("users.sqlite");
 
-  static async initialDatabe() {
+  static async initialDB() {
     try {
       await this.db.run(
         "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
