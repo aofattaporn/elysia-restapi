@@ -63,6 +63,9 @@ const authController = new Elysia({ prefix: "/auth" })
     {
       body: UserAccountSchema,
       response: CommonResponseSchema(t.Null()),
+      detail: {
+        tags: ["Auth"],
+      },
     }
   )
 
@@ -110,6 +113,9 @@ const authController = new Elysia({ prefix: "/auth" })
     {
       body: UserAccountSchema,
       response: CommonResponseSchema(t.Null()),
+      detail: {
+        tags: ["Auth"],
+      },
     }
   );
 

@@ -26,6 +26,9 @@ const userController = new Elysia({ prefix: "/users" })
     },
     {
       response: CommonResponseSchema(t.Array(UserAccountResSchema)),
+      detail: {
+        tags: ["Users"],
+      },
     }
   )
   .get(
@@ -47,6 +50,9 @@ const userController = new Elysia({ prefix: "/users" })
     {
       params: t.Object({ id: t.Number() }),
       response: CommonResponseSchema(UserAccountResSchema),
+      detail: {
+        tags: ["Users"],
+      },
     }
   )
   .delete(
@@ -67,6 +73,9 @@ const userController = new Elysia({ prefix: "/users" })
     },
     {
       response: CommonResponseSchema(t.Null()),
+      detail: {
+        tags: ["Users"],
+      },
     }
   )
 
