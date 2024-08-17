@@ -7,8 +7,10 @@ export const STATUS_CODE_9999: number = 9999;
 export const HTTP_STATUS_CODE_200: number = 200;
 export const HTTP_STATUS_CODE_201: number = 201;
 export const HTTP_STATUS_CODE_500: number = 500;
+export const HTTP_STATUS_CODE_401: number = 401;
 export const HTTP_STATUS_CODE_404: number = 404;
 export const HTTP_STATUS_CODE_417: number = 417;
+export const HTTP_STATUS_CODE_422: number = 422;
 
 export const REQUEST_NOT_FOUND: string = "Not Found :(";
 export const INTERNAL_SERVER_ERROR: string = "INTERNAL_SERVER_ERROR";

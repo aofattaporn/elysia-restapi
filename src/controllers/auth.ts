@@ -3,7 +3,10 @@ import userService from "../services/user";
 import { CommonResponseSchema } from "../models/response/commonRes";
 import {
   HTTP_STATUS_CODE_200,
+  HTTP_STATUS_CODE_401,
+  HTTP_STATUS_CODE_422,
   STATUS_CODE_1000,
+  STATUS_CODE_1899,
   SUCCESS,
 } from "../constants/common";
 import { UserAccountSchema } from "../models/user";
@@ -22,27 +25,35 @@ const authController = new Elysia({ prefix: "/auth" })
   )
   .post(
     "/register",
-    ({ plugin, body, set }) => {
-      const cred = body;
+    async ({ plugin, body, set }) => {
+      plugin.logger.logInfoStartProcess("start on POST:auth/registe");
 
+      const cred = body;
       plugin.logger.logInfo("check user require parameter");
-      if (cred.email && cred.password) {
+      if (!(cred.email && cred.password && cred.username)) {
         plugin.logger.logInfo("already user in database");
-        throw new GlobalError(422, 1899, "mmissing parameter for action");
+        throw new GlobalError(
+          HTTP_STATUS_CODE_422,
+          STATUS_CODE_1899,
+          "missing parameter for action"
+        );
       }
 
       plugin.logger.logInfo("check user already exist");
-      const users: Auth[] = userService.findUserByEmail(cred);
+      const users: Auth[] = await userService.findUserByEmail(cred);
       if (users.length > 0) {
         plugin.logger.logInfo("already user in database, can't to register");
-        throw new AuthError(401, 1899, "unauthorized");
+        throw new AuthError(
+          STATUS_CODE_1899,
+          "unauthorized, user already existing"
+        );
       }
 
       plugin.logger.logInfo("save user on database");
       userService.createUser(cred);
 
       set.status = HTTP_STATUS_CODE_200;
-      plugin.logger.logInfo("/register request success");
+      plugin.logger.logInfo("/register request success\n");
       return {
         code: STATUS_CODE_1000,
         description: SUCCESS,
@@ -63,14 +74,18 @@ const authController = new Elysia({ prefix: "/auth" })
       plugin.logger.logInfo("check user require parameter");
       if (cred.email && cred.password) {
         plugin.logger.logInfo("already user in database");
-        throw new GlobalError(422, 1899, "mmissing parameter for action");
+        throw new GlobalError(
+          HTTP_STATUS_CODE_422,
+          STATUS_CODE_1899,
+          "mmissing parameter for action"
+        );
       }
 
       plugin.logger.logInfo("check user already exist");
       const isExist: boolean = userService.checkAuth(cred);
       if (!isExist) {
         plugin.logger.logInfo("already user in database");
-        throw new AuthError(401, 1899, "unauthorized");
+        throw new AuthError(1899, "unauthorized");
       }
 
       plugin.logger.logInfo("generate jwt token and attach");

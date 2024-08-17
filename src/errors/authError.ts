@@ -1,10 +1,6 @@
 class AuthError extends Error {
-  constructor(
-    public status: number,
-    public code: number,
-    public message: string
-  ) {
-    super(message);
+  constructor(code: number, message: string) {
+    super(message, { cause: code });
   }
 }
 

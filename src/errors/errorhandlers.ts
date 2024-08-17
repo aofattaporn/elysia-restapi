@@ -10,10 +10,14 @@ import {
 } from "../constants/common";
 import { ResponseError } from "../models/response/errorRes";
 import GlobalError from "./globalError";
+import AuthError from "./authError";
+import { plugin } from "../setup";
 
 const errorHandler = new Elysia()
-  .error({ GlobalError })
-  .onError({ as: "scoped" }, ({ code, error, set }) => {
+  .use(plugin)
+  .error({ GlobalError, AuthError })
+  .onError({ as: "scoped" }, ({ plugin, code, error, set }) => {
+    plugin.logger.logInfoEndingProcess("end of processing");
     switch (code) {
       case "NOT_FOUND":
         set.status = HTTP_STATUS_CODE_404;
@@ -25,11 +29,20 @@ const errorHandler = new Elysia()
       case "GlobalError":
         set.status = error.status;
         return {
-          code: error.code,
+          code: error.cause as Number,
           message: error.message,
           timestamp: moment().format(),
         };
+      case "AuthError":
+        set.status = 401;
+        return {
+          code: error.cause as Number,
+          message: error.message,
+          timestamp: moment().format(),
+        };
+
       default:
+        plugin.logger.logFaltal(error.message);
         set.status = HTTP_STATUS_CODE_500;
         return {
           code: STATUS_CODE_1999,
