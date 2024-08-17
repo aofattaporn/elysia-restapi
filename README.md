@@ -1,21 +1,4 @@
-# Elysia with Bun runtime
-
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
-```bash
-bun create elysia ./elysia-example
-```
-
-## Development
-To start the development server run:
-```bash
-bun run dev
-```
-
-Open http://localhost:3000/ with your browser to see the result.
-
-
-# Elysia API Project Summary
+# elysia-restapi Project Summary
 
 ## Project Overview
 This project demonstrates how to create an API using Elysia, focusing on authentication and user management. It includes the following features:
@@ -42,6 +25,15 @@ This project demonstrates how to create an API using Elysia, focusing on authent
 To get started with this template, simply paste this command into your terminal:
 ```bash
 bun create elysia ./elysia-example
+```
+
+## Development
+To start the development server run:
+```bash
+bun run dev
+```
+
+Open http://localhost:3000/ with your browser to see the result.
 
 
 
