@@ -21,12 +21,6 @@ This project demonstrates how to create an API using Elysia, focusing on authent
 - Added Swagger documentation to provide an interactive API interface.
 - Access the Swagger UI at [http://localhost:3000/swagger](http://localhost:3000/swagger) to explore the API endpoints.
 
-## Getting Started
-To get started with this template, simply paste this command into your terminal:
-```bash
-bun create elysia ./elysia-example
-```
-
 ## Development
 To start the development server run:
 ```bash
