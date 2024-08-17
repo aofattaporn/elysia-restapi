@@ -8,7 +8,7 @@ class Logger {
   }
 
   logInfoEndingProcess(value: string) {
-    console.log(value + "\n");
+    console.log(value);
   }
 
   logDebug(value: string) {

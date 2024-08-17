@@ -26,8 +26,13 @@ const errorHandler = new Elysia()
           message: REQUEST_NOT_FOUND,
           timestamp: moment().format(),
         };
+      case "VALIDATION":
+        return {
+          code: 422,
+          message: "missing reqire parameters",
+          timestamp: moment().format(),
+        };
       case "GlobalError":
-        set.status = error.status;
         return {
           code: error.cause as Number,
           message: error.message,

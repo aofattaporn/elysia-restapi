@@ -3,8 +3,6 @@ import userService from "../services/user";
 import { CommonResponseSchema } from "../models/response/commonRes";
 import {
   HTTP_STATUS_CODE_200,
-  HTTP_STATUS_CODE_401,
-  HTTP_STATUS_CODE_422,
   STATUS_CODE_1000,
   STATUS_CODE_1899,
   SUCCESS,
@@ -32,11 +30,7 @@ const authController = new Elysia({ prefix: "/auth" })
       plugin.logger.logInfo("check user require parameter");
       if (!(cred.email && cred.password && cred.username)) {
         plugin.logger.logInfo("already user in database");
-        throw new GlobalError(
-          HTTP_STATUS_CODE_422,
-          STATUS_CODE_1899,
-          "missing parameter for action"
-        );
+        throw new GlobalError(STATUS_CODE_1899, "missing parameter for action");
       }
 
       plugin.logger.logInfo("check user already exist");
@@ -75,7 +69,6 @@ const authController = new Elysia({ prefix: "/auth" })
       if (cred.email && cred.password) {
         plugin.logger.logInfo("already user in database");
         throw new GlobalError(
-          HTTP_STATUS_CODE_422,
           STATUS_CODE_1899,
           "mmissing parameter for action"
         );
