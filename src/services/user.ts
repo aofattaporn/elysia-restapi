@@ -30,6 +30,13 @@ abstract class userService {
     }
   }
 
+  // Function to create a new user
+  static createUser(auth: UserAccount) {
+    const query =
+      "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
+    this.db.run(query, [auth.email, auth.password, auth.username]);
+  }
+
   static async findById(id: number): Promise<UserAccount> {
     try {
       const query = `SELECT * FROM users WHERE id = ${id} LIMIT 1`; // Use a parameterized query
