@@ -5,7 +5,14 @@
 /.pnp
 .pnp.js
 
+# Ignore the users.sqlite file
 users.sqlite
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore log files
+*.log
 
 # testing
 /coverage
