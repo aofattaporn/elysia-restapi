@@ -1,5 +1,4 @@
 import Elysia, { t } from "elysia";
-import AuthError from "../errors/authError";
 import { CommonResponseSchema } from "../models/response/commonRes";
 import { UserAccount, UserAccountSchema } from "../models/user";
 import { STATUS_CODE_1000, SUCCESS } from "../constants/common";

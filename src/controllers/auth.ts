@@ -7,8 +7,7 @@ import {
   STATUS_CODE_1899,
   SUCCESS,
 } from "../constants/common";
-import { UserAccountSchema } from "../models/user";
-import { Auth } from "../models/auth";
+import { UserAccount, UserAccountSchema } from "../models/user";
 import { plugin } from "../setup";
 import jwt from "@elysiajs/jwt";
 import GlobalError from "../errors/globalError";
@@ -34,7 +33,7 @@ const authController = new Elysia({ prefix: "/auth" })
       }
 
       plugin.logger.logInfo("check user already exist");
-      const users: Auth[] = await userService.findUserByEmail(cred);
+      const users: UserAccount[] = await userService.findUserByEmail(cred);
       if (users.length > 0) {
         plugin.logger.logInfo("already user in database, can't to register");
         throw new AuthError(
@@ -61,29 +60,28 @@ const authController = new Elysia({ prefix: "/auth" })
   )
 
   .post(
-    "/sign-in",
-    async ({ jwt, plugin, cookie: { auth }, body, params, set }) => {
-      const cred = body;
+    "/login",
+    async ({ jwt, plugin, cookie: { auth }, body, set }) => {
+      plugin.logger.logInfoStartProcess("start on POST:auth/login");
 
+      const cred = body;
       plugin.logger.logInfo("check user require parameter");
-      if (cred.email && cred.password) {
+      if (!(cred.email && cred.password && cred.username)) {
         plugin.logger.logInfo("already user in database");
-        throw new GlobalError(
-          STATUS_CODE_1899,
-          "mmissing parameter for action"
-        );
+        throw new GlobalError(STATUS_CODE_1899, "missing parameter for action");
       }
 
       plugin.logger.logInfo("check user already exist");
-      const isExist: boolean = userService.checkAuth(cred);
-      if (!isExist) {
+      const users: UserAccount[] =
+        await userService.checkEmailAndPassword(cred);
+      if (!users.length) {
         plugin.logger.logInfo("already user in database");
         throw new AuthError(1899, "unauthorized");
       }
 
       plugin.logger.logInfo("generate jwt token and attach");
       auth.set({
-        value: await jwt.sign(params),
+        value: await jwt.sign(users[0]),
         httpOnly: true,
         maxAge: 7 * 86400,
         path: "/",

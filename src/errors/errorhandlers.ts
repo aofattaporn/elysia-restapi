@@ -48,7 +48,6 @@ const errorHandler = new Elysia()
         };
 
       default:
-        plugin.logger.logFaltal(error.message);
         set.status = HTTP_STATUS_CODE_500;
         return {
           code: STATUS_CODE_1999,

@@ -1,11 +1,20 @@
 import { Database } from "bun:sqlite";
-import { Auth } from "../models/auth";
 import { UserAccount } from "../models/user";
 import AuthError from "../errors/authError";
 import GlobalError from "../errors/globalError";
 
 abstract class userService {
   private static db: Database = new Database("users.sqlite");
+
+  static async initialDatabe() {
+    try {
+      await this.db.run(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
+      );
+    } catch (error) {
+      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+    }
+  }
 
   static async findAll(): Promise<UserAccount[]> {
     try {
@@ -14,27 +23,18 @@ abstract class userService {
 
       return results as UserAccount[];
     } catch (error) {
-      this.db.close(true);
       throw new AuthError(1999, `unauthorized ${error}`);
     }
   }
 
-  static async initialDatabe() {
+  static async createUser(auth: UserAccount) {
     try {
-      await this.db.run(
-        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
-      );
+      const query =
+        "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
+      await this.db.run(query, [auth.email, auth.password, auth.username]);
     } catch (error) {
-      this.db.close(true);
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
-  }
-
-  // Function to create a new user
-  static createUser(auth: UserAccount) {
-    const query =
-      "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
-    this.db.run(query, [auth.email, auth.password, auth.username]);
   }
 
   static async findById(id: number): Promise<UserAccount> {
@@ -47,12 +47,10 @@ abstract class userService {
       }
       return results[0] as UserAccount;
     } catch (error) {
-      this.db.close(true);
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
   }
 
-  // Function to find a user by email
   static async findUserByEmail(auth: UserAccount): Promise<UserAccount[]> {
     try {
       const query = `SELECT * FROM users WHERE email = '${auth.email}'`;
@@ -60,20 +58,27 @@ abstract class userService {
 
       return results as UserAccount[];
     } catch (error) {
-      this.db.close(true);
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
   }
 
-  // Function to check if the provided authentication is valid
-  static checkAuth(auth: UserAccount): boolean {
-    const user = this.findUserByEmail(auth);
-    return false;
+  static async checkEmailAndPassword(
+    auth: UserAccount
+  ): Promise<UserAccount[]> {
+    try {
+      const query = this.db.query(
+        `SELECT * FROM users WHERE email = $email AND password = $password`
+      );
+      const results = query.all({
+        $email: auth.email,
+        $password: auth.password,
+      });
+
+      return results as UserAccount[];
+    } catch (error) {
+      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+    }
   }
-
-  static updateUser(auth: Auth) {}
-
-  static deleteUser(auth: Auth) {}
 }
 
 export default userService;
