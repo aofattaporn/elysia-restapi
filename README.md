@@ -26,6 +26,7 @@ To build the project using Docker, use the following command:
 
 ```bash
 docker build -t elysia-api .
+```
 
 ## Development
 To start the development server run:
