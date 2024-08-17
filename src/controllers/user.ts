@@ -1,9 +1,10 @@
 import Elysia, { t } from "elysia";
 import { CommonResponseSchema } from "../models/response/commonRes";
-import { UserAccount, UserAccountSchema } from "../models/user";
+import { UserAccountResSchema } from "../models/user";
 import { STATUS_CODE_1000, SUCCESS } from "../constants/common";
 import userService from "../services/user";
 import { plugin } from "../setup";
+import { UserAccountRes } from "../models/response/userRes";
 
 const userController = new Elysia({ prefix: "/users" })
   .use(plugin)
@@ -13,7 +14,7 @@ const userController = new Elysia({ prefix: "/users" })
       plugin.logger.logInfoStartProcess("start on GET: users/");
 
       plugin.logger.logInfo("find users in database");
-      const users: UserAccount[] = await userService.findAll();
+      const users: UserAccountRes[] = await userService.findAll();
 
       plugin.logger.logInfoEndingProcess("request successfully");
       set.status = 200;
@@ -24,7 +25,7 @@ const userController = new Elysia({ prefix: "/users" })
       };
     },
     {
-      response: CommonResponseSchema(t.Array(UserAccountSchema)),
+      response: CommonResponseSchema(t.Array(UserAccountResSchema)),
     }
   )
   .get(
@@ -33,7 +34,7 @@ const userController = new Elysia({ prefix: "/users" })
       plugin.logger.logInfoStartProcess("start on GET: users/:id");
 
       plugin.logger.logInfo(`find users by id:${id} in database`);
-      const users: UserAccount = await userService.findById(id);
+      const users: UserAccountRes = await userService.findById(id);
 
       plugin.logger.logInfoEndingProcess("request successfully");
       set.status = 200;
@@ -45,7 +46,7 @@ const userController = new Elysia({ prefix: "/users" })
     },
     {
       params: t.Object({ id: t.Number() }),
-      response: CommonResponseSchema(UserAccountSchema),
+      response: CommonResponseSchema(UserAccountResSchema),
     }
   )
 

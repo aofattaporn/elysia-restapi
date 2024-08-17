@@ -7,6 +7,9 @@ import serverTiming from "@elysiajs/server-timing";
 import swagger from "@elysiajs/swagger";
 import errorHandler from "./errors/errorhandlers";
 import userService from "./services/user";
+import AuthError from "./errors/authError";
+import jwt from "@elysiajs/jwt";
+import { STATUS_CODE_1799 } from "./constants/common";
 
 const app = new Elysia()
 
@@ -23,14 +26,16 @@ const app = new Elysia()
 
   // route handleer
   .use(authController)
-  .guard(
-    {
-      beforeHandle({ set, cookie: { auth } }) {
-        if (!auth.cookie) return (set.status = "Unauthorized");
-      },
-    },
-    (protectedRoute) => protectedRoute.use(userController)
+  .use(
+    jwt({
+      secret: "jwt-secrets",
+    })
   )
+  .onBeforeHandle(async ({ jwt, cookie: { auth } }) => {
+    const cred = await jwt.verify(auth.value);
+    if (!cred) throw new AuthError(STATUS_CODE_1799, "Unauthorization");
+  })
+  .use(userController)
 
   // initial server
   .listen(3000);

@@ -11,3 +11,8 @@ export const UserAccountSchema = t.Object({
   username: t.String(),
   password: t.String(),
 });
+
+export const UserAccountResSchema = t.Object({
+  email: t.String(),
+  username: t.String(),
+});
