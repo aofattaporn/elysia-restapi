@@ -21,6 +21,12 @@ This project demonstrates how to create an API using Elysia, focusing on authent
 - Added Swagger documentation to provide an interactive API interface.
 - Access the Swagger UI at [http://localhost:3000/swagger](http://localhost:3000/swagger) to explore the API endpoints.
 
+## Build Command
+To build the project using Docker, use the following command:
+
+```bash
+docker build -t elysia-api .
+
 ## Development
 To start the development server run:
 ```bash
