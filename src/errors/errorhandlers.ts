@@ -11,7 +11,7 @@ import {
 import { ResponseError } from "../models/response/errorRes";
 import GlobalError from "./globalError";
 import AuthError from "./authError";
-import { plugin } from "../setup";
+import { plugin } from "../plugin";
 
 const errorHandler = new Elysia()
   .use(plugin)

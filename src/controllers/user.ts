@@ -3,7 +3,7 @@ import { CommonResponseSchema } from "../models/response/commonRes";
 import { UserAccountResSchema } from "../models/user";
 import { STATUS_CODE_1000, SUCCESS } from "../constants/common";
 import userService from "../services/user";
-import { plugin } from "../setup";
+import { plugin } from "../plugin";
 import { UserAccountRes } from "../models/response/userRes";
 
 const userController = new Elysia({ prefix: "/users" })

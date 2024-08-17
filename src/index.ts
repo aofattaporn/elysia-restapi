@@ -10,12 +10,16 @@ import userService from "./services/user";
 import AuthError from "./errors/authError";
 import jwt from "@elysiajs/jwt";
 import { STATUS_CODE_1799 } from "./constants/common";
+import customSwager from "./plugins/documentation";
+import documentation from "./plugins/documentation";
+import cordConfigs from "./plugins/cors";
 
 const app = new Elysia()
 
-  .use(cors())
-  .use(bearer())
   .use(serverTiming())
+  .use(bearer())
+  .use(cordConfigs)
+  .use(documentation)
 
   // initial database
   .onBeforeHandle(() => userService.initialDatabe())
@@ -35,35 +39,7 @@ const app = new Elysia()
     if (!cred && !path.includes("/swagger"))
       throw new AuthError(STATUS_CODE_1799, "Unauthorization");
   })
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: "Elysia Documentation",
-          version: "1.0.0",
-        },
-        tags: [
-          { name: "Auth", description: "Authentication endpoints" },
-          { name: "Users", description: "UserManagement endpoints" },
-        ],
-      },
-    })
-  )
   .use(userController)
-  .use(
-    swagger({
-      documentation: {
-        info: {
-          title: "Elysia Documentation",
-          version: "1.0.0",
-        },
-        tags: [
-          { name: "App", description: "General endpoints" },
-          { name: "Auth", description: "Authentication endpoints" },
-        ],
-      },
-    })
-  )
 
   // initial server
   .listen(3000);

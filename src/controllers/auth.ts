@@ -7,12 +7,8 @@ import {
   STATUS_CODE_1899,
   SUCCESS,
 } from "../constants/common";
-import {
-  UserAccount,
-  UserAccountResSchema,
-  UserAccountSchema,
-} from "../models/user";
-import { plugin } from "../setup";
+import { UserAccount, UserAccountSchema } from "../models/user";
+import { plugin } from "../plugin";
 import jwt from "@elysiajs/jwt";
 import GlobalError from "../errors/globalError";
 import AuthError from "../errors/authError";
