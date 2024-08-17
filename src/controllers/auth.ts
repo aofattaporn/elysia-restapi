@@ -7,11 +7,16 @@ import {
   STATUS_CODE_1899,
   SUCCESS,
 } from "../constants/common";
-import { UserAccount, UserAccountSchema } from "../models/user";
+import {
+  UserAccount,
+  UserAccountResSchema,
+  UserAccountSchema,
+} from "../models/user";
 import { plugin } from "../setup";
 import jwt from "@elysiajs/jwt";
 import GlobalError from "../errors/globalError";
 import AuthError from "../errors/authError";
+import { UserAccountRes } from "../models/response/userRes";
 
 const authController = new Elysia({ prefix: "/auth" })
   .use(plugin)
@@ -24,16 +29,10 @@ const authController = new Elysia({ prefix: "/auth" })
     "/register",
     async ({ plugin, body, set }) => {
       plugin.logger.logInfoStartProcess("start on POST:auth/registe");
-
-      const cred = body;
-      plugin.logger.logInfo("check user require parameter");
-      if (!(cred.email && cred.password && cred.username)) {
-        plugin.logger.logInfo("already user in database");
-        throw new GlobalError(STATUS_CODE_1899, "missing parameter for action");
-      }
+      plugin.logger.logInfo("check user require parameter passed");
 
       plugin.logger.logInfo("check user already exist");
-      const users: UserAccount[] = await userService.findUserByEmail(cred);
+      const users: UserAccountRes[] = await userService.findUserByEmail(body);
       if (users.length > 0) {
         plugin.logger.logInfo("already user in database, can't to register");
         throw new AuthError(
@@ -42,8 +41,16 @@ const authController = new Elysia({ prefix: "/auth" })
         );
       }
 
+      // TODO: Encrypt password for better
+      plugin.logger.logInfo("encode password for save");
+      const encodePWD: string = btoa(body.password);
+
       plugin.logger.logInfo("save user on database");
-      userService.createUser(cred);
+      userService.createUser({
+        username: body.username,
+        email: body.email,
+        password: encodePWD,
+      } as UserAccount);
 
       set.status = HTTP_STATUS_CODE_200;
       plugin.logger.logInfo("/register request success\n");
@@ -64,16 +71,21 @@ const authController = new Elysia({ prefix: "/auth" })
     async ({ jwt, plugin, cookie: { auth }, body, set }) => {
       plugin.logger.logInfoStartProcess("start on POST:auth/login");
 
-      const cred = body;
       plugin.logger.logInfo("check user require parameter");
-      if (!(cred.email && cred.password && cred.username)) {
+      if (!(body.email && body.password && body.username)) {
         plugin.logger.logInfo("already user in database");
         throw new GlobalError(STATUS_CODE_1899, "missing parameter for action");
       }
 
+      plugin.logger.logInfo("encode password for save");
+      const encodePWD: string = btoa(body.password);
+
       plugin.logger.logInfo("check user already exist");
-      const users: UserAccount[] =
-        await userService.checkEmailAndPassword(cred);
+      const users: UserAccountRes[] = await userService.checkEmailAndPassword({
+        username: body.username,
+        email: body.email,
+        password: encodePWD,
+      } as UserAccount);
       if (!users.length) {
         plugin.logger.logInfo("already user in database");
         throw new AuthError(1899, "unauthorized");

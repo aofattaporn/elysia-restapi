@@ -2,6 +2,7 @@ import { Database } from "bun:sqlite";
 import { UserAccount } from "../models/user";
 import AuthError from "../errors/authError";
 import GlobalError from "../errors/globalError";
+import { UserAccountRes } from "../models/response/userRes";
 
 abstract class userService {
   private static db: Database = new Database("users.sqlite");
@@ -51,7 +52,7 @@ abstract class userService {
     }
   }
 
-  static async findUserByEmail(auth: UserAccount): Promise<UserAccount[]> {
+  static async findUserByEmail(auth: UserAccount): Promise<UserAccountRes[]> {
     try {
       const query = `SELECT * FROM users WHERE email = '${auth.email}'`;
       const results = await this.db.query(query).all();
@@ -64,7 +65,7 @@ abstract class userService {
 
   static async checkEmailAndPassword(
     auth: UserAccount
-  ): Promise<UserAccount[]> {
+  ): Promise<UserAccountRes[]> {
     try {
       const query = this.db.query(
         `SELECT * FROM users WHERE email = $email AND password = $password`
@@ -74,7 +75,7 @@ abstract class userService {
         $password: auth.password,
       });
 
-      return results as UserAccount[];
+      return results as UserAccountRes[];
     } catch (error) {
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
