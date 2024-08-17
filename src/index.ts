@@ -6,6 +6,7 @@ import cors from "@elysiajs/cors";
 import serverTiming from "@elysiajs/server-timing";
 import swagger from "@elysiajs/swagger";
 import errorHandler from "./errors/errorhandlers";
+import userService from "./services/user";
 
 const app = new Elysia()
 
@@ -13,6 +14,9 @@ const app = new Elysia()
   .use(swagger())
   .use(bearer())
   .use(serverTiming())
+
+  // initial database
+  .onBeforeHandle(() => userService.initialDatabe())
 
   // error handlers - global scope plugins
   .use(errorHandler)

@@ -14,7 +14,19 @@ abstract class userService {
 
       return results as UserAccount[];
     } catch (error) {
+      this.db.close(true);
       throw new AuthError(1999, `unauthorized ${error}`);
+    }
+  }
+
+  static async initialDatabe() {
+    try {
+      await this.db.run(
+        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
+      );
+    } catch (error) {
+      this.db.close(true);
+      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
   }
 
@@ -28,6 +40,7 @@ abstract class userService {
       }
       return results[0] as UserAccount;
     } catch (error) {
+      this.db.close(true);
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
   }
@@ -35,15 +48,12 @@ abstract class userService {
   // Function to find a user by email
   static async findUserByEmail(auth: UserAccount): Promise<UserAccount[]> {
     try {
-      await this.db.run(
-        "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
-      );
-
       const query = `SELECT * FROM users WHERE email = '${auth.email}'`;
       const results = await this.db.query(query).all();
 
       return results as UserAccount[];
     } catch (error) {
+      this.db.close(true);
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
     }
   }
@@ -52,13 +62,6 @@ abstract class userService {
   static checkAuth(auth: UserAccount): boolean {
     const user = this.findUserByEmail(auth);
     return false;
-  }
-
-  // Function to create a new user
-  static createUser(auth: UserAccount) {
-    const query =
-      "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
-    this.db.run(query, [auth.email, auth.password, auth.username]);
   }
 
   static updateUser(auth: Auth) {}

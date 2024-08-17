@@ -17,6 +17,7 @@ const errorHandler = new Elysia()
   .use(plugin)
   .error({ GlobalError, AuthError })
   .onError({ as: "scoped" }, ({ plugin, code, error, set }) => {
+    plugin.logger.logError(error.message);
     plugin.logger.logInfoEndingProcess("end of processing");
     switch (code) {
       case "NOT_FOUND":
