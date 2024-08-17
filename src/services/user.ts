@@ -13,7 +13,7 @@ abstract class userService {
         "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, email TEXT, password TEXT, username TEXT)"
       );
     } catch (error) {
-      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+      throw new GlobalError(1999, `can't execute SQL query: ${error}`);
     }
   }
 
@@ -34,7 +34,7 @@ abstract class userService {
         "INSERT INTO users (email, password, username) VALUES (?, ?, ?)";
       await this.db.run(query, [auth.email, auth.password, auth.username]);
     } catch (error) {
-      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+      throw new GlobalError(1999, `can't execute SQL query: ${error}`);
     }
   }
 
@@ -48,7 +48,7 @@ abstract class userService {
       }
       return results[0] as UserAccount;
     } catch (error) {
-      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+      throw new GlobalError(1999, `can't execute SQL query: ${error}`);
     }
   }
 
@@ -59,7 +59,7 @@ abstract class userService {
 
       return results as UserAccount[];
     } catch (error) {
-      throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+      throw new GlobalError(1999, `can't execute SQL query: ${error}`);
     }
   }
 
@@ -78,6 +78,15 @@ abstract class userService {
       return results as UserAccountRes[];
     } catch (error) {
       throw new GlobalError(1999, `cant to execute sql query : ${error}`);
+    }
+  }
+
+  static async deleteAll(): Promise<void> {
+    try {
+      const query = this.db.query(`DELETE FROM users`);
+      const result = query.run();
+    } catch (error) {
+      throw new GlobalError(1999, `can't execute SQL query: ${error}`);
     }
   }
 }

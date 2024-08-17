@@ -49,6 +49,26 @@ const userController = new Elysia({ prefix: "/users" })
       response: CommonResponseSchema(UserAccountResSchema),
     }
   )
+  .delete(
+    "/",
+    async ({ plugin, set }) => {
+      plugin.logger.logInfoStartProcess("start on DELETE: users/");
+
+      plugin.logger.logInfo(`delete all users in database`);
+      await userService.deleteAll();
+
+      plugin.logger.logInfoEndingProcess("request successfully");
+      set.status = 200;
+      return {
+        code: STATUS_CODE_1000,
+        description: SUCCESS,
+        data: null,
+      };
+    },
+    {
+      response: CommonResponseSchema(t.Null()),
+    }
+  )
 
   .put("/", () => {});
 
