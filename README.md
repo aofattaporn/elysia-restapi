@@ -15,10 +15,33 @@ bun run dev
 Open http://localhost:3000/ with your browser to see the result.
 
 
+# Elysia API Project Summary
 
-### Summary of Changes
-- Added a section for **Adding Swagger Documentation** with step-by-step instructions.
-- Included the necessary code to set up Swagger in your Elysia application.
-- Provided instructions on how to access the Swagger UI. 
+## Project Overview
+This project demonstrates how to create an API using Elysia, focusing on authentication and user management. It includes the following features:
 
-This will help users of your template to easily integrate Swagger into their Elysia applications.
+### API Routes
+- **Authentication Routes**:
+  - **Register**: Allows users to create a new account.
+  - **Login**: Authenticates users and provides a JWT for further requests.
+
+- **User Management Routes**:
+  - **CRUD Operations**: Create, Read, Update, and Delete user information. These routes are protected and require authentication via a JWT stored in cookies.
+
+## Learning Objectives
+- Understand the Elysia API framework and its project structure.
+- Implement JWT authentication for secure login and registration.
+- Create protected routes that require authentication for user management.
+- Utilize Swagger for API documentation and exploration.
+
+## Swagger Integration
+- Added Swagger documentation to provide an interactive API interface.
+- Access the Swagger UI at [http://localhost:3000/swagger](http://localhost:3000/swagger) to explore the API endpoints.
+
+## Getting Started
+To get started with this template, simply paste this command into your terminal:
+```bash
+bun create elysia ./elysia-example
+
+
+
